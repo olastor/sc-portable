@@ -15,6 +15,10 @@ jobs:
             api/
             client/
           key: daa0d97131e4f637b7d24716803ee0709fdbabb6
+      - name: show files
+        run: |
+          ls -l
+          tree
       - name: build the data
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
