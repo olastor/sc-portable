@@ -8,11 +8,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: clone
-        run: git clone https://github.com/suttacentral/suttacentral
-      - name: cd into
-        run: cd suttacentral
-      - name: ls it
-        run: ls -l
-
+      - uses: actions/cache@v3
+        id: cache
+        with:
+          path: |
+            api/
+            client/
+          key: daa0d97131e4f637b7d24716803ee0709fdbabb6
+      - name: build the data
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          git clone https://github.com/suttacentral/suttacentral
+          cd suttacentral
+          sed -i 's/sc-elasticsearch//g' Makefile
+          mv ../import.py ./server/server/
+          make run-preview-env-no-search
+          export FRONTEND_IMAGE=$(docker ps | grep sc-frontend | cut -d' ' -f1)
+          docker exec $FRONTEND_IMAGE bash -c "sed -i '/BundleAnalyzerPlugin/d' webpack.common.js && node_modules/.bin/webpack --no-watch --config webpack.prod.js"
+          docker cp $FRONTEND_IMAGE:/opt/sc/frontend/build .
+          mv ./build ../client
+          export FLASK_IMAGE=$(docker ps | grep sc-flask | cut -d' ' -f1)
+          docker exec $FLASK_IMAGE python3 server/import.py
 
