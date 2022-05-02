@@ -6,21 +6,6 @@ on:
       - main
 
 jobs:
-  # build-docs:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - name: build docs
-  #       run: |
-  #         pip3 install --user mkdocs-material
-  #         cd docs
-  #         mkdocs build
-  #     - uses: actions/upload-artifact@v3
-  #       with:
-  #         name: binaries
-  #         path: binaries/
-  #         retention-days: 5
-
   build-data:
     runs-on: ubuntu-latest
     steps:
@@ -95,3 +80,29 @@ jobs:
           name: result
           path: redbean.com
           retention-days: 5
+  
+  deploy:
+    runs-on: ubuntu-latest
+    needs: bundle
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: 'production'
+      - name: get data 2
+        uses: actions/download-artifact@v3
+        with:
+          name: result
+      - name: build docs
+        run: |
+          pip3 install --user
+          cd docs
+          mkdocs build
+          mkdir -p docs/site/builds
+          mv redbean.com docs/site/builds
+      - name: push prod
+        run: |
+          git config --global user.name "Push Bot"
+          git config --global user.email "olastor@users.noreply.github.com"
+          git add docs/site
+          git commit -m "deploy"
+          git push
