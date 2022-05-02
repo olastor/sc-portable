@@ -48,6 +48,8 @@ if __name__ == '__main__':
     for text in collection['texts']:
         urls.append('/parallels/%s' % (text['uid']))
 
+    urls.append('/suttaplex/sutta')
+    urls.append('/suttafullpath/sutta')
     urls.append('/paragraphs')
     urls.append('/expansion')
     urls.append('/root_edition')
