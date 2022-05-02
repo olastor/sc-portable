@@ -59,7 +59,7 @@ jobs:
           cd cosmopolitan
           git checkout $COSMO_GIT_REF
           echo "Testing"
-          make -j8 o//tool/net/redbean.com >> build.log 2>&1
+          make -j8 o//tool/net/redbean.com # >> build.log 2>&1
           mv build.log ..
           mv o/tool/net ../binaries
       - uses: actions/upload-artifact@v3
