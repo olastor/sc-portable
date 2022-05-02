@@ -51,10 +51,13 @@ jobs:
           sudo zip -r api.zip api/ # special characters making some errors, need to zip it
       - uses: actions/upload-artifact@v3
         with:
-          name: sc-data
-          path: |
-            client/
-            api.zip
+          name: sc-client
+          path: client/
+          retention-days: 5
+      - uses: actions/upload-artifact@v3
+        with:
+          name: sc-api-data
+          path: api.zip
           retention-days: 5
 
   build-redbean:
@@ -92,8 +95,9 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: |
-            client/
-            api.zip
+            redbean-binaries
+            sc-api-data
+            sc-client
       - name: get redbean
         uses: actions/download-artifact@v3
         with:
