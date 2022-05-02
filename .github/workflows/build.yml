@@ -83,10 +83,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: sc-client
-      - name: get redbean
-        uses: actions/download-artifact@v3
-        with:
-          name: binaries/
       - name: package it
         run: |
           unzip api.zip
