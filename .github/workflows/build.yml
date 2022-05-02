@@ -34,9 +34,9 @@ jobs:
           key: ${{ hashFiles('scripts/import.py', 'scripts/build-data.sh') }}
       - name: build the data
         if: steps.cache.outputs.cache-hit != 'true'
-        run: |
-          sudo scripts/build-data.sh
-          sudo zip -r api.zip api
+        run: sudo scripts/build-data.sh
+      - name: zip the data
+        run: sudo zip -r api.zip api
       - uses: actions/upload-artifact@v3
         with:
           name: sc-client
