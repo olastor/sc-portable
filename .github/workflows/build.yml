@@ -31,7 +31,7 @@ jobs:
           path: |
             api/
             client/
-          key: ${{ runner.os }}-${{ hashFiles('import.py') }}-${{ hashFiles('.github/workflows/build.yml') }}
+          key: ${{ hashFiles('scripts/import.py', 'scripts/build-data.sh') }}
       - name: build the data
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
@@ -56,7 +56,7 @@ jobs:
         id: cache
         with:
           path: binaries/
-          key: ${{ hashFiles('redbean-version.txt') }}-${{ hashFiles('.github/workflows/build.yml') }}
+          key: ${{ hashFiles('.redbean-version', 'scripts/build-redbean.sh') }}
       - name: build the data
         if: steps.cache.outputs.cache-hit != 'true'
         run: scripts/build-redbean.sh
@@ -74,10 +74,15 @@ jobs:
       - name: get data
         uses: actions/download-artifact@v3
         with:
-          name: |
-            redbean-binaries
-            sc-api-data
-            sc-client
+          name: redbean-binaries
+      - name: get data 2
+        uses: actions/download-artifact@v3
+        with:
+          name: sc-api-data
+      - name: get data 3
+        uses: actions/download-artifact@v3
+        with:
+          name: sc-client
       - name: get redbean
         uses: actions/download-artifact@v3
         with:
@@ -86,7 +91,7 @@ jobs:
         run: |
           unzip api.zip
           mv binaries/redbean.com .
-          ./package.sh "en" "redbean.com"
+          scripts/package.sh "en" "redbean.com"
       - uses: actions/upload-artifact@v3
         with:
           name: result

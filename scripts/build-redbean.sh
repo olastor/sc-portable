@@ -2,7 +2,7 @@
 
 set -e
 
-export COSMO_GIT_REF=$(cat redbean-version.txt)
+export COSMO_GIT_REF=$(cat .redbean-version)
 git clone https://github.com/jart/cosmopolitan.git
 cd cosmopolitan
 git checkout $COSMO_GIT_REF
