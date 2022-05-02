@@ -4,7 +4,7 @@ import os
 import app
 import json
 
-LANGUAGES = ['en']
+LANGUAGES = ['en', 'de']
 PALI_LOOKUP_LANGUAGES = ['en', 'es', 'de', 'zh', 'pt', 'id', 'nl']
 CHINESE_LOOKUP_LANGUAGES = ['en']
 
@@ -20,35 +20,35 @@ if __name__ == '__main__':
 
     urls = []
 
-    # for iso_code in LANGUAGES:
-    #     collection = client.get('/pwa/collection/sutta?languages=%s&root_lang=true' % (iso_code)).get_json()
+    for iso_code in LANGUAGES:
+        collection = client.get('/pwa/collection/sutta?languages=%s&root_lang=true' % (iso_code)).get_json()
 
-    #     for menu_id in collection['menu']:
-    #         urls.append('/menu/%s?language=%s' % (menu_id, iso_code))
-    #         urls.append('/suttafullpath/%s?language=%s' % (menu_id, iso_code))
+        for menu_id in collection['menu']:
+            urls.append('/menu/%s?language=%s' % (menu_id, iso_code))
+            urls.append('/suttafullpath/%s?language=%s' % (menu_id, iso_code))
 
-    #     for sp_id in collection['suttaplex']:
-    #         urls.append('/suttaplex/%s?language=%s' % (sp_id, iso_code))
+        for sp_id in collection['suttaplex']:
+            urls.append('/suttaplex/%s?language=%s' % (sp_id, iso_code))
 
-    #     for text in collection['texts']:
-    #         for translation in text['translations']:
-    #             for author in translation['authors']:
-    #                 urls.append('/suttas/%s/%s?lang=%s&siteLanguage=%s' % (text['uid'], author, translation['lang'], iso_code))
-    #                 urls.append('/bilarasuttas/%s/%s?lang=%s&siteLanguage=%s' % (text['uid'], author, translation['lang'], iso_code))
+        for text in collection['texts']:
+            for translation in text['translations']:
+                for author in translation['authors']:
+                    urls.append('/suttas/%s/%s?lang=%s&siteLanguage=%s' % (text['uid'], author, translation['lang'], iso_code))
+                    urls.append('/bilarasuttas/%s/%s?lang=%s&siteLanguage=%s' % (text['uid'], author, translation['lang'], iso_code))
 
-    #     urls.append('/menu/sutta?language=' + iso_code)
+        urls.append('/menu/sutta?language=' + iso_code)
 
-    #     if iso_code in PALI_LOOKUP_LANGUAGES:
-    #         urls.append('/dictionaries/lookup?from=pli&to=' + iso_code)
+        if iso_code in PALI_LOOKUP_LANGUAGES:
+            urls.append('/dictionaries/lookup?from=pli&to=' + iso_code)
 
-    #     if iso_code in CHINESE_LOOKUP_LANGUAGES:
-    #         urls.append('/dictionaries/lookup?from=lhz&to=' + iso_code + '&fallback=false')
-    #         urls.append('/dictionaries/lookup?from=lhz&to=' + iso_code + '&fallback=true')
+        if iso_code in CHINESE_LOOKUP_LANGUAGES:
+            urls.append('/dictionaries/lookup?from=lhz&to=' + iso_code + '&fallback=false')
+            urls.append('/dictionaries/lookup?from=lhz&to=' + iso_code + '&fallback=true')
 
-    #     urls.append('/tipitaka_menu?language=' + iso_code)
+        urls.append('/tipitaka_menu?language=' + iso_code)
 
-    # for text in collection['texts']:
-    #     urls.append('/parallels/%s' % (text['uid']))
+    for text in collection['texts']:
+        urls.append('/parallels/%s' % (text['uid']))
 
     urls.append('/suttaplex/sutta')
     urls.append('/suttafullpath/sutta')
