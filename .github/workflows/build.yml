@@ -51,6 +51,28 @@ jobs:
           path: binaries/
           retention-days: 5
 
+  build-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        id: cache
+        with:
+          path: docs/site
+          key: ${{ hashFiles('docs/**/*') }}
+      - name: build the data
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          pip3 install --user mkdocs-material
+          cd docs
+          mkdocs build
+          mkdir -p docs/site/builds
+      - uses: actions/upload-artifact@v3
+        with:
+          name: docs
+          path: docs/site
+          retention-days: 5
+
   bundle:
     runs-on: ubuntu-latest
     needs: ["build-data", "build-redbean"]
@@ -83,7 +105,7 @@ jobs:
   
   deploy:
     runs-on: ubuntu-latest
-    needs: bundle
+    needs: ["bundle", "build-docs"]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -94,15 +116,11 @@ jobs:
           name: result
       - name: build docs
         run: |
-          pip3 install --user mkdocs-material
-          cd docs
-          mkdocs build
-          mkdir -p docs/site/builds
           mv redbean.com docs/site/builds
       - name: push prod
         run: |
           git config --global user.name "Push Bot"
           git config --global user.email "olastor@users.noreply.github.com"
-          git add docs/site
+          git add -A
           git commit -m "deploy"
           git push
