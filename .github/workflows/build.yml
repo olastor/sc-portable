@@ -86,6 +86,8 @@ jobs:
       - name: package it
         run: |
           unzip api.zip
+          ls -l
+          tree
           mv binaries/redbean.com .
           scripts/package.sh "en" "redbean.com"
       - uses: actions/upload-artifact@v3
