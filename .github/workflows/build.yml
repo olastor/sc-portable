@@ -53,7 +53,8 @@ jobs:
       - name: build the data
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          apt update && apt install -y make
+          sudo apt update
+          sudo apt install -y make
           export COSMO_GIT_REF=$(cat redbean-version.txt)
           git clone https://github.com/jart/cosmopolitan.git
           cd cosmopolitan
