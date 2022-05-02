@@ -31,7 +31,7 @@ jobs:
           path: |
             api/
             client/
-          key: ${{ runner.os }}-${{ hashFiles('import.py') }}
+          key: ${{ runner.os }}-${{ hashFiles('import.py') }}-${{ hashFiles('.github/workflows/build.yml') }}
       - name: build the data
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
@@ -49,6 +49,7 @@ jobs:
           sudo mv server/out ../api
           cd ..
           sudo zip -r api.zip api/ # special characters making some errors, need to zip it
+          ls -l
       - uses: actions/upload-artifact@v3
         with:
           name: sc-client
