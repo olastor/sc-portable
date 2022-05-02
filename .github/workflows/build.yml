@@ -35,21 +35,8 @@ jobs:
       - name: build the data
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          git clone https://github.com/suttacentral/suttacentral
-          cd suttacentral
-          sed -i 's/sc-elasticsearch//g' Makefile
-          mv "$GITHUB_WORKSPACE/import.py" ./server/server/
-          make run-preview-env-no-search
-          export FRONTEND_IMAGE=$(docker ps | grep sc-frontend | cut -d' ' -f1)
-          docker exec $FRONTEND_IMAGE bash -c "sed -i '/BundleAnalyzerPlugin/d' webpack.common.js && node_modules/.bin/webpack --no-watch --config webpack.prod.js"
-          docker cp $FRONTEND_IMAGE:/opt/sc/frontend/build .
-          mv ./build ../client
-          export FLASK_IMAGE=$(docker ps | grep sc-flask | cut -d' ' -f1)
-          docker exec $FLASK_IMAGE python3 server/import.py
-          sudo mv server/out ../api
-          cd ..
-          sudo zip -r api.zip api/ # special characters making some errors, need to zip it
-          ls -l
+          sudo scripts/build-data.sh
+          sudo zip -r api.zip api
       - uses: actions/upload-artifact@v3
         with:
           name: sc-client
@@ -72,15 +59,7 @@ jobs:
           key: ${{ hashFiles('redbean-version.txt') }}-${{ hashFiles('.github/workflows/build.yml') }}
       - name: build the data
         if: steps.cache.outputs.cache-hit != 'true'
-        run: |
-          export COSMO_GIT_REF=$(cat redbean-version.txt)
-          git clone https://github.com/jart/cosmopolitan.git
-          cd cosmopolitan
-          git checkout $COSMO_GIT_REF
-          sudo sh -c "echo ':APE:M::MZqFpD::/bin/sh:' >/proc/sys/fs/binfmt_misc/register"
-          make -j8 o//tool/net/redbean.com >> build.log 2>&1
-          mv build.log ..
-          mv o/tool/net ../binaries
+        run: scripts/build-redbean.sh
       - uses: actions/upload-artifact@v3
         with:
           name: redbean-binaries
