@@ -32,14 +32,14 @@ jobs:
           export FLASK_IMAGE=$(docker ps | grep sc-flask | cut -d' ' -f1)
           docker exec $FLASK_IMAGE python3 server/import.py
           sudo mv server/out ../api
-      - uses: actions/upload-artifact@v3
-        with:
-          name: my-artifact
-          path: |
-            client/
-            api/
-            redbean.com
-          retention-days: 5
+      # TODO: uncomment and zip if needed
+      # - uses: actions/upload-artifact@v3
+      #   with:
+      #     name: my-artifact
+      #     path: |
+      #       client/
+      #       api/
+      #     retention-days: 5
 
   build-redbean:
     runs-on: ubuntu-latest
