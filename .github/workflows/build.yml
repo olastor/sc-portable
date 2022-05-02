@@ -94,7 +94,7 @@ jobs:
           name: result
       - name: build docs
         run: |
-          pip3 install --user
+          pip3 install --user mkdocs-material
           cd docs
           mkdocs build
           mkdir -p docs/site/builds
