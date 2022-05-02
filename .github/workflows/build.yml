@@ -49,7 +49,7 @@ jobs:
         id: cache
         with:
           path: binaries/
-          key: ${{ hashFiles('redbean-version.txt') }}
+          key: ${{ hashFiles('redbean-version.txt') }}-${{ hashFiles('.github/workflows/build.yml') }}
       - name: build the data
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
