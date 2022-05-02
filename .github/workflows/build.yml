@@ -57,7 +57,7 @@ jobs:
           export COSMO_GIT_REF=$(cat redbean-version.txt)
           git clone https://github.com/jart/cosmopolitan.git
           cd cosmopolitan
-          git checkout $COSMO_GIT_REF
+          #git checkout $COSMO_GIT_REF
           echo "Testing"
           make -j8 o//tool/net/redbean.com # >> build.log 2>&1
           mv build.log ..
