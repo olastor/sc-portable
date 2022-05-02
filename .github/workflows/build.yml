@@ -18,6 +18,7 @@ jobs:
       - name: build the data
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
+          sudo ls -l # TODO: remove me
           git clone https://github.com/suttacentral/suttacentral
           cd suttacentral
           sed -i 's/sc-elasticsearch//g' Makefile
@@ -29,5 +30,4 @@ jobs:
           mv ./build ../client
           export FLASK_IMAGE=$(docker ps | grep sc-flask | cut -d' ' -f1)
           docker exec $FLASK_IMAGE python3 server/import.py
-          mv server/out ../api
-
+          sudo mv server/out ../api
