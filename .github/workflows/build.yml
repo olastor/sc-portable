@@ -114,6 +114,10 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: result
+      - name: get docs
+        uses: actions/download-artifact@v3
+        with:
+          name: docs
       - name: build docs
         run: |
           tree
