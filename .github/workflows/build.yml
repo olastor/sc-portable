@@ -121,6 +121,7 @@ jobs:
       - name: build docs
         run: |
           tree
+          mkdir -p builds
           mv redbean.com builds/
       - name: push prod
         run: |
