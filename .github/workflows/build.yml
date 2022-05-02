@@ -66,3 +66,17 @@ jobs:
           name: binaries
           path: binaries/
           retention-days: 5
+
+  bundle:
+    runs-on: ubuntu-latest
+    needs: ["build-data", "build-redbean"]
+    steps:
+      - uses: actions/checkout@v3
+      - name: package it
+        run: |
+          ./package.sh "en" "redbean.com"
+      - uses: actions/upload-artifact@v3
+        with:
+          name: result
+          path: redbean.com
+          retention-days: 5
