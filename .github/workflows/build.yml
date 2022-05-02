@@ -116,6 +116,7 @@ jobs:
           name: result
       - name: build docs
         run: |
+          tree
           mv redbean.com builds/
       - name: push prod
         run: |
