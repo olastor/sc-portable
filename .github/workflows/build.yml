@@ -116,7 +116,7 @@ jobs:
           name: result
       - name: build docs
         run: |
-          mv redbean.com docs/site/builds
+          mv redbean.com builds/
       - name: push prod
         run: |
           git config --global user.name "Push Bot"
