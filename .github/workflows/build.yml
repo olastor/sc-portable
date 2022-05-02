@@ -75,6 +75,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: redbean-binaries
+          path: binaries
       - name: get data 2
         uses: actions/download-artifact@v3
         with:
@@ -83,6 +84,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: sc-client
+          path: client
       - name: package it
         run: |
           unzip api.zip
