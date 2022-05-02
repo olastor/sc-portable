@@ -6,6 +6,21 @@ on:
       - main
 
 jobs:
+  # build-docs:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: build docs
+  #       run: |
+  #         pip3 install --user mkdocs-material
+  #         cd docs
+  #         mkdocs build
+  #     - uses: actions/upload-artifact@v3
+  #       with:
+  #         name: binaries
+  #         path: binaries/
+  #         retention-days: 5
+
   build-data:
     runs-on: ubuntu-latest
     steps:
@@ -32,14 +47,15 @@ jobs:
           export FLASK_IMAGE=$(docker ps | grep sc-flask | cut -d' ' -f1)
           docker exec $FLASK_IMAGE python3 server/import.py
           sudo mv server/out ../api
-      # TODO: uncomment and zip if needed
-      # - uses: actions/upload-artifact@v3
-      #   with:
-      #     name: my-artifact
-      #     path: |
-      #       client/
-      #       api/
-      #     retention-days: 5
+          cd ..
+          sudo zip -r api.zip api/ # special characters making some errors, need to zip it
+      - uses: actions/upload-artifact@v3
+        with:
+          name: sc-data
+          path: |
+            client/
+            api.zip
+          retention-days: 5
 
   build-redbean:
     runs-on: ubuntu-latest
@@ -63,7 +79,7 @@ jobs:
           mv o/tool/net ../binaries
       - uses: actions/upload-artifact@v3
         with:
-          name: binaries
+          name: redbean-binaries
           path: binaries/
           retention-days: 5
 
@@ -72,8 +88,20 @@ jobs:
     needs: ["build-data", "build-redbean"]
     steps:
       - uses: actions/checkout@v3
+      - name: get data
+        uses: actions/download-artifact@v3
+        with:
+          name: |
+            client/
+            api.zip
+      - name: get redbean
+        uses: actions/download-artifact@v3
+        with:
+          name: binaries/
       - name: package it
         run: |
+          unzip api.zip
+          mv binaries/redbean.com .
           ./package.sh "en" "redbean.com"
       - uses: actions/upload-artifact@v3
         with:
