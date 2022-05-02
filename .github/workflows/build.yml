@@ -2,12 +2,14 @@ name: "Build"
 
 on:
   push:
+    branches:
+      - main
 
 jobs:
   build-data:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: actions/cache@v3
         id: cache
         with:
@@ -18,7 +20,6 @@ jobs:
       - name: build the data
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          sudo ls -l # TODO: remove me
           git clone https://github.com/suttacentral/suttacentral
           cd suttacentral
           sed -i 's/sc-elasticsearch//g' Makefile
@@ -31,3 +32,36 @@ jobs:
           export FLASK_IMAGE=$(docker ps | grep sc-flask | cut -d' ' -f1)
           docker exec $FLASK_IMAGE python3 server/import.py
           sudo mv server/out ../api
+      - uses: actions/upload-artifact@v3
+        with:
+          name: my-artifact
+          path: |
+            client/
+            api/
+            redbean.com
+          retention-days: 5
+
+  build-redbean:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        id: cache
+        with:
+          path: binaries/
+          key: ${{ hashFiles('redbean-version.txt') }}
+      - name: build the data
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          export COSMO_GIT_REF=$(cat redbean-version.txt)
+          git clone https://github.com/jart/cosmopolitan.git
+          cd cosmopolitan
+          git checkout $COSMO_GIT_REF
+          make -j8 o//tool/net/redbean.com >> build.log 2>&1
+          mv build.log ..
+          mv o/tool/net ../binaries
+      - uses: actions/upload-artifact@v3
+        with:
+          name: binaries
+          path: binaries/
+          retention-days: 5
