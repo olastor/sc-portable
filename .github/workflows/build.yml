@@ -14,7 +14,7 @@ jobs:
           path: |
             api/
             client/
-          key: daa0d97131e4f637b7d24716803ee0709fdbabb6
+          key: ${{ runner.os }}-${{ hashFiles('import.py') }}
       - name: build the data
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
