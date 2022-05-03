@@ -4,7 +4,7 @@ import os
 import app
 import json
 
-LANGUAGES = ['en', 'de']
+LANGUAGES = ['en']
 PALI_LOOKUP_LANGUAGES = ['en', 'es', 'de', 'zh', 'pt', 'id', 'nl']
 CHINESE_LOOKUP_LANGUAGES = ['en']
 
@@ -62,7 +62,7 @@ if __name__ == '__main__':
 
     results = []
 
-    bufmax = 10 * 1024 * 1024
+    bufmax = 50 * 1024 * 1024
     bufsize = 0
 
     for url in urls:
@@ -73,10 +73,8 @@ if __name__ == '__main__':
         bufsize += len(text)
 
         if bufsize > bufmax:
-            print('flushing', bufsize)
             flush(results)
             results = []
             bufsize = 0
-            print('flushed')
 
     flush(results)
