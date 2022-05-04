@@ -11,6 +11,10 @@ function file_exists(name)
    end
 end
 
+local function starts_with(str, start)
+  return str:sub(1, #start) == start
+end
+
 function handle_404_fallback(api_url)
   local lang = GetParam('lang')
   local site_lang = GetParam('siteLanguage')
@@ -65,6 +69,12 @@ OnHttpRequest = function()
     SetHeader('Content-Type', 'application/json')
 
     local api_url = string.sub(url, api_url_start) 
+
+    if starts_with(api_url, '/api/search') then
+      RoutePath('search.lua')
+      return
+    end
+
     if file_exists('/zip' .. api_url) and ServeAsset(api_url) then
       SetStatus(200)
     else
