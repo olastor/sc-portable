@@ -29,4 +29,24 @@ function utils.read_file(file)
   return content
 end
 
+function utils.file_exists(name)
+   local f = io.open(name,"r")
+   if f ~= nil then 
+     io.close(f) 
+     return true 
+   else 
+     return false 
+   end
+end
+
+function utils.load_stopwords(lang)
+  file = '/zip/stopwords/' .. lang
+  if not utils.file_exists(file) then return {} end
+  local data = {}
+  for line in io.lines(file) do 
+    data[line] = true
+  end
+  return data
+end
+
 return utils
