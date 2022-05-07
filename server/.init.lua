@@ -1,15 +1,7 @@
 HidePath('/usr/share/zoneinfo/')
 HidePath('/usr/share/ssl/')
 
-function file_exists(name)
-   local f = io.open(name,"r")
-   if f ~= nil then 
-     io.close(f) 
-     return true 
-   else 
-     return false 
-   end
-end
+utils = require "utils"
 
 local function starts_with(str, start)
   return str:sub(1, #start) == start
@@ -21,13 +13,13 @@ function handle_404_fallback(api_url)
 
   if lang and site_lang then
     local url_same_lang = string.gsub(api_url, 'siteLanguage=' .. site_lang, 'siteLanguage=' .. lang)
-    if file_exists('/zip' .. url_same_lang) and ServeAsset(url_same_lang) then
+    if utils.file_exists('/zip' .. url_same_lang) and ServeAsset(url_same_lang) then
       SetStatus(200)
       return
     end
 
     local url_no_site_lang = string.gsub(api_url, 'siteLanguage=' .. site_lang, '')
-    if file_exists('/zip' .. url_no_site_lang) and ServeAsset(url_no_site_lang) then
+    if utils.file_exists('/zip' .. url_no_site_lang) and ServeAsset(url_no_site_lang) then
       SetStatus(200)
       return
     end
@@ -35,21 +27,21 @@ function handle_404_fallback(api_url)
 
   if lang and not site_lang then
     local url_added_sitelang = api_url .. '&siteLanguage=' .. lang
-    if file_exists('/zip' .. url_added_sitelang) and ServeAsset(url_added_sitelang) then
+    if utils.file_exists('/zip' .. url_added_sitelang) and ServeAsset(url_added_sitelang) then
       SetStatus(200)
       return
     end
 
     -- try adding primary language TODO: find some better way
     local url_sitelang_en = api_url .. '&siteLanguage=en'
-    if file_exists('/zip' .. url_sitelang_en) and ServeAsset(url_sitelang_en) then
+    if utils.file_exists('/zip' .. url_sitelang_en) and ServeAsset(url_sitelang_en) then
       SetStatus(200)
       return
     end
   end
 
   -- without any parameters
-  if file_exists('/zip' .. GetPath()) and ServeAsset(GetPath()) then
+  if utils.file_exists('/zip' .. GetPath()) and ServeAsset(GetPath()) then
     SetStatus(200)
     return
   end
@@ -75,7 +67,7 @@ OnHttpRequest = function()
       return
     end
 
-    if file_exists('/zip' .. api_url) and ServeAsset(api_url) then
+    if utils.file_exists('/zip' .. api_url) and ServeAsset(api_url) then
       SetStatus(200)
     else
       handle_404_fallback(api_url)
