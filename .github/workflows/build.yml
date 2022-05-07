@@ -128,7 +128,7 @@ jobs:
         run: |
           tree
           mkdir -p builds
-          mv redbean.com builds/
+          mv "*.com" builds/
       - name: push prod
         run: |
           git config --global user.name "Push Bot"
