@@ -6,6 +6,46 @@ HL_TAG_OPEN = '<strong class="highlight">'
 HL_TAG_CLOSE = '</strong>'
 HL_MAX_TOKENS = 64
 
+function get_meta(text_id, author, language)
+  local meta = {
+    acronym = text_id,
+    author = author,
+    is_root = false,
+    heading = {
+      division = "",
+      subhead = {},
+      title = ""
+    }
+  }
+
+  local info_file = string.format(
+    '/zip/api/suttaplex/%s?language=%s',
+    text_id, language
+  )
+
+  if utils.file_exists(info_file) then
+    data = json.decode(utils.read_file(info_file))
+    
+    for _, info in ipairs(data) do
+      meta['acronym'] = info['acronym']
+      meta['heading']['title'] = info['translated_title']
+
+      for _, item in ipairs(info['translations']) do
+        if item['author_uid'] == 'author' and item['lang'] == language then
+          meta['is_root'] = item['is_root']
+          meta['author'] = item['author']
+          break
+        end
+      end
+
+      -- structure like [ { ...data } ]
+      break
+    end
+  end
+
+  return meta
+end
+
 local query = GetParam('query')
 local language = GetParam('language')
 local limit = GetParam('limit')
@@ -48,20 +88,17 @@ end
 local stmt = db:prepare(sql_query_search)
 stmt:bind_values(query, limit, offset)
 for item in stmt:nrows() do
+  local meta = get_meta(item['text_id'], item['author'], language)
   local hit = {
-    acronym = item['text_id'],
+    acronym = meta['acronym'],
     uid = item['text_id'],
     lang = item['language'],
-    author = item['author'],
+    author = meta['author'],
     author_short = item['author'],
-    heading = {
-      division = "",
-      subhead = {},
-      title = ""
-    },
-    is_root = false,
+    heading = meta['heading'],
+    is_root = meta['is_root'],
     highlight = {
-      content = {item['hl']}
+      content = {item['hl']} -- TODO: maybe use sql highlight() and split manually, this makes one big chunk
     },
     url = '/' .. item['text_id'] .. '/' .. language .. '/' .. item['author']
   }    
