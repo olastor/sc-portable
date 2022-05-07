@@ -102,6 +102,7 @@ jobs:
           mv binaries/redbean.com .
           scripts/package.sh "en" "redbean.com"
           zip redbean.com search.db
+          mv redbean.com "sc-portable_${GITHUB_REF_NAME}.com"
       - uses: actions/upload-artifact@v3
         with:
           name: sc-portable
@@ -127,7 +128,7 @@ jobs:
         run: |
           tree
           mkdir -p builds
-          mv redbean.com builds/
+          mv "*.com" builds/
       - name: push prod
         run: |
           git config --global user.name "Push Bot"

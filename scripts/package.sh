@@ -15,7 +15,7 @@ zip -qr "./$BINARY_NAME" -@ < api_include.lst
 rm api_include.lst
 
 cd server/
-zip "../$BINARY_NAME" .
+zip -qr "../$BINARY_NAME" .
 
 cd ../client
 zip  -qr "../$BINARY_NAME" .
