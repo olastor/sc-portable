@@ -5,7 +5,7 @@ import app
 import json
 
 LANGUAGES = ['en']
-PALI_LOOKUP_LANGUAGES = ['en', 'es', 'de', 'zh', 'pt', 'id', 'nl']
+PALI_LOOKUP_LANGUAGES = ['en', 'es', 'de'] #, 'zh', 'pt', 'id', 'nl']
 CHINESE_LOOKUP_LANGUAGES = ['en']
 
 def flush(results):
@@ -33,6 +33,8 @@ if __name__ == '__main__':
         for text in collection['texts']:
             for translation in text['translations']:
                 for author in translation['authors']:
+                    urls.append('/suttafullpath/%s?language=%s' % (text['uid'], iso_code))
+                    urls.append('/suttaplex/%s?language=%s' % (text['uid'], iso_code))
                     urls.append('/suttas/%s/%s?lang=%s&siteLanguage=%s' % (text['uid'], author, translation['lang'], iso_code))
                     urls.append('/bilarasuttas/%s/%s?lang=%s&siteLanguage=%s' % (text['uid'], author, translation['lang'], iso_code))
 
@@ -59,6 +61,8 @@ if __name__ == '__main__':
     urls.append('/shortcuts')
     urls.append('/pali_reference_edition')
     urls.append('/languages?all=true')
+
+    urls = sorted(list(set(urls)))
 
     results = []
 
