@@ -97,8 +97,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y python3 python3-pip
           pip3 install --user beautifulsoup4
-          scripts/create_search_index.py
           unzip api.zip
+          scripts/create_search_index.py
           mv binaries/redbean.com .
           scripts/package.sh "en" "redbean.com"
           zip redbean.com search.db
