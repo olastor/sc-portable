@@ -106,7 +106,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: sc-portable
-          path: redbean.com
+          path: "*.com"
           retention-days: 5
   
   deploy:
