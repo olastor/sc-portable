@@ -104,7 +104,7 @@ jobs:
           zip redbean.com search.db
       - uses: actions/upload-artifact@v3
         with:
-          name: result
+          name: sc-portable
           path: redbean.com
           retention-days: 5
   
@@ -118,7 +118,7 @@ jobs:
       - name: get data 2
         uses: actions/download-artifact@v3
         with:
-          name: result
+          name: sc-portable
       - name: get docs
         uses: actions/download-artifact@v3
         with:
