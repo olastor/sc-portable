@@ -128,7 +128,7 @@ jobs:
         run: |
           tree
           mkdir -p builds
-          mv "*.com" builds/
+          find . -name "sc_portable*.com" -exec mv {} builds/
       - name: push prod
         run: |
           git config --global user.name "Push Bot"
