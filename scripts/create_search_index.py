@@ -8,21 +8,10 @@ from os import path, environ
 from glob import glob
 import sqlite3
 from collections import defaultdict
-from nltk.stem import PorterStemmer
-from nltk.tokenize import sent_tokenize, word_tokenize, RegexpTokenizer
-from nltk.corpus import stopwords
 import string
-import unidecode
 from bs4 import BeautifulSoup
 
-tk = RegexpTokenizer(r'\w+')
-stemmer = PorterStemmer()
-
-def preprocess(text, lang='en'):
-    if '<p' in text:
-        text = BeautifulSoup(text).get_text()
-
-    return text
+DB_NAME = 'search.db'
 
 def get_uid(filename):
     return filename.split('/')[-2]
@@ -40,7 +29,7 @@ def get_tokenizer(language):
         return 'unicode61 remove_diacritics 2'
 
 if __name__ == '__main__':
-    con = sqlite3.connect('example.db')
+    con = sqlite3.connect(DB_NAME)
     cur = con.cursor()
 
     table_text_search = defaultdict(list)

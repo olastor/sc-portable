@@ -2,6 +2,7 @@ lsqlite3 = require "lsqlite3"
 json = require "json"
 utils = require "utils"
 
+DB_NAME = 'search.db'
 HL_TAG_OPEN = '<strong class="highlight">'
 HL_TAG_CLOSE = '</strong>'
 HL_MAX_TOKENS = 64
@@ -67,7 +68,7 @@ local total = limit
 local count = 0
 local hits = {}
 
-local db = lsqlite3.open('example.db')
+local db = lsqlite3.open(DB_NAME)
 local table_name = 'text_search_' .. language
 local sql_query_search = string.format(
   "SELECT text_id, author, snippet(%s, 2, '%s', '%s', '', '%i') AS hl FROM %s WHERE text MATCH ? ORDER BY bm25(%s) LIMIT ? OFFSET ?;",
