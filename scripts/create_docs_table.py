@@ -30,7 +30,7 @@ if __name__ == '__main__':
             ', '.join(languages), 
             ':x:' if no_search else ':white_check_mark:',
             human_readable_size(path.getsize(binary)),
-            '[download](https://github.com/olastor/sc-portable/raw/production/builds/%)' % (filename)
+            '[download](https://github.com/olastor/sc-portable/raw/production/builds/%s)' % (filename)
         )
 
     with open('docs/docs/index.md') as f:
