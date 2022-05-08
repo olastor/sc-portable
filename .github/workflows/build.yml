@@ -140,6 +140,7 @@ jobs:
           name: docs
       - name: build
         run: |
+          tree
           mkdir -p builds
           find docs/site -maxdepth 1 -exec  mv {} . \;
           find . -maxdepth 1 -name "*.com" -exec mv {} builds \;
