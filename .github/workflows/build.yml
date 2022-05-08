@@ -74,7 +74,7 @@ jobs:
           path: client
       - name: package it
         run: |
-          unzip api.zip
+          unzip -q api.zip
           scripts/create_search_index.py
 
           mv binaries/redbean.com .
