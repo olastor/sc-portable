@@ -91,6 +91,8 @@ jobs:
           scripts/package.sh "en" "sc-portable_${GITHUB_REF_NAME}_en.com"
 
           zip "sc-portable_${GITHUB_REF_NAME}_en.com" search.db
+
+          rm redbean.com
       - uses: actions/upload-artifact@v3
         with:
           name: sc-portable
@@ -142,7 +144,6 @@ jobs:
         run: |
           tree
           mkdir -p builds
-          find docs/site -maxdepth 1 -exec  mv {} . \;
           find . -maxdepth 1 -name "*.com" -exec mv {} builds \;
           rm -rf docs
       - name: push prod
