@@ -104,10 +104,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: sc-portable
-      - name: get docs
-        uses: actions/download-artifact@v3
-        with:
-          name: docs
       - name: build docs
         run: |
           git checkout ${GITHUB_REF_NAME} -- docs
