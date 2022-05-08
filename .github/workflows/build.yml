@@ -141,8 +141,8 @@ jobs:
       - name: build
         run: |
           mkdir -p builds
-          find docs/site -depth 1 -exec  mv {} . \;
-          find . -depth 1 -name "*.com" -exec mv {} builds \;
+          find docs/site -maxdepth 1 -exec  mv {} . \;
+          find . -maxdepth 1 -name "*.com" -exec mv {} builds \;
           rm -rf docs
       - name: push prod
         run: |
