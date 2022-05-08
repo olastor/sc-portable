@@ -51,28 +51,6 @@ jobs:
           path: binaries/
           retention-days: 5
 
-  build-docs:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v3
-        id: cache
-        with:
-          path: docs/site
-          key: ${{ hashFiles('docs/**/*') }}
-      - name: build the data
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: |
-          pip3 install --user mkdocs-material
-          cd docs
-          mkdocs build
-          mkdir -p docs/site/builds
-      - uses: actions/upload-artifact@v3
-        with:
-          name: docs
-          path: docs/site
-          retention-days: 5
-
   bundle:
     runs-on: ubuntu-latest
     needs: ["build-data", "build-redbean"]
@@ -100,9 +78,14 @@ jobs:
           unzip api.zip
           scripts/create_search_index.py
           mv binaries/redbean.com .
-          scripts/package.sh "en" "redbean.com"
-          zip redbean.com search.db
-          mv redbean.com "sc-portable_${GITHUB_REF_NAME}.com"
+
+          cp redbean.com "sc-portable_${GITHUB_REF_NAME}_en.com"
+          cp redbean.com "sc-portable_${GITHUB_REF_NAME}_en_nosearch.com"
+        
+          scripts/package.sh "en" "sc-portable_${GITHUB_REF_NAME}_en_nosearch.com"
+          scripts/package.sh "en" "sc-portable_${GITHUB_REF_NAME}_en.com"
+
+          zip "sc-portable_${GITHUB_REF_NAME}_en.com" search.db
       - uses: actions/upload-artifact@v3
         with:
           name: sc-portable
@@ -111,7 +94,7 @@ jobs:
   
   deploy:
     runs-on: ubuntu-latest
-    needs: ["bundle", "build-docs"]
+    needs: ["bundle"]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -126,9 +109,19 @@ jobs:
           name: docs
       - name: build docs
         run: |
+          git checkout ${GITHUB_REF_NAME} -- docs
           tree
-          mkdir -p builds
-          find . -name "sc_portable*.com" -exec mv {} builds/
+          sudo apt-get update
+          sudo apt-get install -y python3 python3-pip
+          pip3 install --user mkdocs-material
+          python3 scripts/create_docs_table.py
+          cd docs/
+          mkdocs build
+          mkdir -p site/builds
+          cd ..
+          find . -maxdepth 1 -name "sc_portable*.com" -exec mv {} docs/site/builds/
+          find docs -maxdepth 1 -exec mv {} .
+          rm -rf docs
       - name: push prod
         run: |
           git config --global user.name "Push Bot"

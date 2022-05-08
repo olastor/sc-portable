@@ -1,22 +1,15 @@
-# Welcome to MkDocs
+# sc-portable
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+**docs are work in progress**...
 
-## Commands
+## download
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+{{table}}
 
-## Project layout
+## install
 
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+click on it on windows or run
 
-
-|included languages|file size|build date|download link|
-|:-:|:-:|:-:|:-:|
-|pli|111MB|2022-03-03|link|
+```
+chmod +x 
+```
