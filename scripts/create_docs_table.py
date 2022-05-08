@@ -15,13 +15,13 @@ def human_readable_size(size, decimal_places=1):
     return f"{size:.{decimal_places}f} {unit}"
 
 if __name__ == '__main__':
-    binaries = glob(path.join(BUILDS_DIR, PREFIX + 'v*.com'))
+    binaries = glob(path.join(BUILDS_DIR, PREFIX + '*.com'))
 
     table = '|version|languages|search enabled|size|download|\n'
     table += '|:-:|:-:|:-:|:-:|:-:|'
     for binary in binaries:
         filename = path.basename(binary)
-        version = re.match(r'^(v[^_]+)', filename.replace(PREFIX, '')).group(1)
+        version = re.match(r'^([^_]+)', filename.replace(PREFIX, '')).group(1)
         languages = re.match(r'^([^_]+)', filename.replace(PREFIX, '').replace(version + '_', '')).group(1).split('-')
         no_search = '_nosearch' in filename
 
