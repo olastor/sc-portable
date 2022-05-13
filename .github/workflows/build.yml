@@ -101,7 +101,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: sc-search-db
-          path: "*.sql"
+          path: "*.db"
           retention-days: 5
 
   build-docs:
