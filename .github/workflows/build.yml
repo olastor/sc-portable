@@ -98,6 +98,11 @@ jobs:
           name: sc-portable
           path: "*.com"
           retention-days: 5
+      - uses: actions/upload-artifact@v3
+        with:
+          name: sc-search-db
+          path: "*.sql"
+          retention-days: 5
 
   build-docs:
     runs-on: ubuntu-latest
