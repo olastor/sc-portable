@@ -87,10 +87,10 @@ jobs:
           cp redbean.com "sc-portable_${GITHUB_REF_NAME}_en-de.com"
         
           scripts/package.sh "en" "sc-portable_${GITHUB_REF_NAME}_en.com"
-          scripts/create_search_index.py "en" "sc-portable_${GITHUB_REF_NAME}_en.db"
+          scripts/create_search_index.py "en" "sc-portable_${GITHUB_REF_NAME}_en.com.db"
 
           scripts/package.sh "en,de" "sc-portable_${GITHUB_REF_NAME}_en-de.com"
-          scripts/create_search_index.py "en,de" "sc-portable_${GITHUB_REF_NAME}_en-de.db"
+          scripts/create_search_index.py "en,de" "sc-portable_${GITHUB_REF_NAME}_en-de.com.db"
 
           rm redbean.com
       - uses: actions/upload-artifact@v3
