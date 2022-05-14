@@ -2,7 +2,7 @@ lsqlite3 = require "lsqlite3"
 json = require "json"
 utils = require "utils"
 
-DB_NAME = 'search.db'
+DB_PATH = 'search.db'
 HL_TAG_OPEN = '<strong class="highlight">'
 HL_TAG_CLOSE = '</strong>'
 HL_MAX_TOKENS = 64
@@ -47,6 +47,43 @@ function get_meta(text_id, author, language)
   return meta
 end
 
+function trim_highlights(highlighted_text, max_window_size, min_gap_size)
+  local results_set = {}
+  local results = {}
+
+  highlighted_text = string.gsub(highlighted_text, '\n', ' ')
+
+  local trim_pattern = '>('
+  for i=0,max_window_size do
+    trim_pattern = trim_pattern .. '[^<]'
+  end
+  trim_pattern = trim_pattern .. ')'
+
+  for i=0,min_gap_size do
+    trim_pattern = trim_pattern .. '[^<]'
+  end
+  trim_pattern = trim_pattern .. '+('
+
+  for i=0,max_window_size do
+    trim_pattern = trim_pattern .. '[^<]'
+  end
+  trim_pattern = trim_pattern .. ')'
+
+  text_trimmed = string.gsub('>' .. highlighted_text .. '<', trim_pattern, '>%1\n%2')
+  for item in string.gmatch(text_trimmed, '[^\n]+') do
+    results_set[item] = true
+  end
+
+  for item,_ in pairs(results_set) do
+    table.insert(results, item)
+  end
+
+  table.remove(results, #results)
+  table.remove(results, 1)
+
+  return results
+end
+
 local query = GetParam('query')
 local language = GetParam('language')
 local limit = GetParam('limit')
@@ -68,11 +105,11 @@ local total = limit
 local count = 0
 local hits = {}
 
-local db = lsqlite3.open(DB_NAME)
+local db = lsqlite3.open(DB_PATH)
 local table_name = 'text_search_' .. language
 local sql_query_search = string.format(
-  "SELECT text_id, author, snippet(%s, 2, '%s', '%s', '', '%i') AS hl FROM %s WHERE text MATCH ? ORDER BY bm25(%s) LIMIT ? OFFSET ?;",
-  table_name, HL_TAG_OPEN, HL_TAG_CLOSE, HL_MAX_TOKENS, table_name, table_name
+  "SELECT text_id, author, highlight(%s, 2, '%s', '%s') AS hl FROM %s WHERE text MATCH ? ORDER BY bm25(%s) LIMIT ? OFFSET ?;",
+  table_name, HL_TAG_OPEN, HL_TAG_CLOSE, table_name, table_name
 )
 local sql_query_total = string.format(
   "SELECT COUNT(*) FROM %s WHERE text MATCH ? ORDER BY bm25(%s);",
@@ -99,7 +136,7 @@ for item in stmt:nrows() do
     heading = meta['heading'],
     is_root = meta['is_root'],
     highlight = {
-      content = {item['hl']} -- TODO: maybe use sql highlight() and split manually, this makes one big chunk
+      content = trim_highlights(item['hl'], 50, 5)
     },
     url = '/' .. item['text_id'] .. '/' .. language .. '/' .. item['author']
   }    
