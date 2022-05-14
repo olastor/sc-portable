@@ -84,7 +84,7 @@ jobs:
           mv binaries/redbean.com .
 
           cp redbean.com "sc-portable_${GITHUB_REF_NAME}_en.com"
-          cp redbean.com "sc-portable_${GITHUB_REF_NAME}_en_nosearch.com"
+          cp redbean.com "sc-portable_${GITHUB_REF_NAME}_en-de.com"
         
           scripts/package.sh "en" "sc-portable_${GITHUB_REF_NAME}_en.com"
           scripts/create_search_index.py "en" "sc-portable_${GITHUB_REF_NAME}_en.db"
