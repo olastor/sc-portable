@@ -1,4 +1,4 @@
-name: "Build"
+name: "Build and Deploy"
 
 on:
   push:
@@ -12,6 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
+        if: "!startsWith(github.ref, 'refs/tags/v')"
         id: cache
         with:
           path: |
@@ -19,7 +20,7 @@ jobs:
             client/
           key: ${{ hashFiles('scripts/import.py', 'scripts/build-data.sh') }}
       - name: build the data
-        if: steps.cache.outputs.cache-hit != 'true'
+        if: "startsWith(github.ref, 'refs/tags/v') || steps.cache.outputs.cache-hit != 'true'"
         run: sudo scripts/build-data.sh
       - name: zip the data
         run: sudo zip -r api.zip api
@@ -58,26 +59,26 @@ jobs:
     needs: ["build-data", "build-redbean"]
     steps:
       - uses: actions/checkout@v3
-      - name: get data
+      - name: Download binaries
         uses: actions/download-artifact@v3
         with:
           name: redbean-binaries
           path: binaries
-      - name: get data 2
+      - name: Download API data
         uses: actions/download-artifact@v3
         with:
           name: sc-api-data
-      - name: get data 3
+      - name: Download client build
         uses: actions/download-artifact@v3
         with:
           name: sc-client
           path: client
-      - name: install deps
+      - name: Install Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y python3 python3-pip
           pip3 install --user beautifulsoup4
-      - name: package it
+      - name: Create Executables
         run: |
           unzip -q api.zip
           mv binaries/redbean.com .
@@ -95,26 +96,34 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: sc-portable
-          path: |
-            "*.com"
-            "*.db"
+          path: "*.com"
+          retention-days: 5
+      - uses: actions/upload-artifact@v3
+        with:
+          name: sc-portable-search
+          path: "*.db"
           retention-days: 5
 
   build-docs:
     runs-on: ubuntu-latest
     needs: ["bundle-files"]
+    # if: startsWith(github.ref, 'refs/tags/v')
     steps:
       - uses: actions/checkout@v3
-      - name: get files
+      - name: Download Executables
         uses: actions/download-artifact@v3
         with:
           name: sc-portable
-      - name: install deps
+      - name: Download SQLite databases
+        uses: actions/download-artifact@v3
+        with:
+          name: sc-portable-search
+      - name: Install Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y python3 python3-pip
           pip3 install --user mkdocs-material
-      - name: build
+      - name: Build Docs
         run: |
           python3 scripts/create_docs_table.py
           cd docs/
@@ -126,28 +135,41 @@ jobs:
           path: docs/site/
           retention-days: 5
   
-  deploy:
+  release-tag:
     runs-on: ubuntu-latest
-    needs: ["build-docs"]
+    permissions:
+      contents: write
+    if: startsWith(github.ref, 'refs/tags/v')
     steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: 'production'
-      - name: get data 2
+      - name: Download Executables
         uses: actions/download-artifact@v3
         with:
           name: sc-portable
-      - name: get docs
+      - name: Download SQLite databases
+        uses: actions/download-artifact@v3
+        with:
+          name: sc-portable-search
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: "*.com,*.db"
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy-website:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    needs: ["build-docs"]
+    # needs: ["build-docs", "release-tag"]
+    # if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: 'website'
+      - name: Download Docs Build
         uses: actions/download-artifact@v3
         with:
           name: docs
-      - name: build
-        run: |
-          tree
-          mkdir -p builds
-          find . -maxdepth 1 -name "*.com" -exec mv {} builds \;
-          rm -rf docs
-      - name: push prod
+      - name: Deploy Website
         run: |
           git config --global user.name "Push Bot"
           git config --global user.email "olastor@users.noreply.github.com"

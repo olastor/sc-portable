@@ -1,8 +1,8 @@
 import re
 from glob import glob
 from os import path
+from datetime import datetime
 
-BUILDS_DIR = ''
 PREFIX = 'sc-portable_'
 
 def human_readable_size(size, decimal_places=1):
@@ -14,30 +14,36 @@ def human_readable_size(size, decimal_places=1):
         size /= 1024.0
     return f"{size:.{decimal_places}f} {unit}"
 
-if __name__ == '__main__':
-    binaries = glob(path.join(BUILDS_DIR, PREFIX + '*.com'))
-
-    table = '|version|languages|search enabled|size|download|\n'
+def build_table(glob_pattern)
+    table = '|Languages|Size|Version|Build Date|Download Link|\n'
     table += '|:-:|:-:|:-:|:-:|:-:|'
-    for binary in binaries:
-        filename = path.basename(binary)
+
+    for file in glob(glob_pattern):
+        filename = path.splitext(path.basename(file))[0]
+
         version = re.match(r'^([^_]+)', filename.replace(PREFIX, '')).group(1)
         languages = re.match(r'^([^_]+)', filename.replace(PREFIX, '').replace(version + '_', '')).group(1).split('-')
-        no_search = '_nosearch' in filename
+        download_link = 'https://github.com/olastor/sc-portable/releases/download/%s/%s' % (os.environ['GITHUB_REF_NAME'], path.basename(file))
 
-        table += '\n|%s|%s|%s|%s|%s|' % (
-            version, 
+        table += '\n|%s|%s|%s|%s|%s|%s|' % (
             ', '.join(languages), 
-            ':x:' if no_search else ':white_check_mark:',
-            human_readable_size(path.getsize(binary)),
-            '[download](https://github.com/olastor/sc-portable/raw/production/builds/%s)' % (filename)
+            human_readable_size(path.getsize(file)),
+            version, 
+            datetime.today().strftime('%Y-%m-%d'),
+            '[download](%s)' % (download_link)
         )
+
+    return table
+
+if __name__ == '__main__':
+    binaries_table = build_table('*.com')
+    search_table = build_table('*.db')
 
     with open('docs/docs/index.md') as f:
         index_md = f.read()
 
     with open('docs/docs/index.md', 'w') as f:
-        f.write(index_md.replace('{{table}}', table))
+        index_md = index_md.replace('{{binaries_table}}', binaries_table)
+        index_md = index_md.replace('{{search_table}}', search_table)
 
-
-
+        f.write(index_md)

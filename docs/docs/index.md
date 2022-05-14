@@ -4,7 +4,11 @@
 
 ## download
 
-{{table}}
+{{binaries_table}}
+
+here are the search files
+
+{{search_table}}
 
 ## install
 
