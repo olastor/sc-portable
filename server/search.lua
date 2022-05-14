@@ -5,7 +5,33 @@ utils = require "utils"
 DB_PATH = 'search.db'
 HL_TAG_OPEN = '<strong class="highlight">'
 HL_TAG_CLOSE = '</strong>'
-HL_MAX_TOKENS = 64
+HL_WINDOW_SIZE = 20
+HL_MIN_GAP = 10
+
+-- TODO: add more later
+STOP_LANGUAGES = {
+  en = "english",
+  de = "german"
+}
+
+function remove_stopwords(text, language) 
+  if not STOP_LANGUAGES[language] then
+    return text
+  end
+
+  stop_file = utils.read_file('/zip/stopwords/' .. STOP_LANGUAGES[language])
+
+  text = text:lower()
+
+  for word in stop_file:gsub('\n$', ''):gmatch('[^\n]+') do
+    text = text:gsub('%s' .. word .. '%s', ' ')
+    text = text:gsub('%s' .. word .. '$', ' ')
+    text = text:gsub('^' .. word .. '%s', ' ')
+    text = text:gsub('^' .. word .. '$', ' ')
+  end
+
+  return text
+end
 
 function get_meta(text_id, author, language)
   local meta = {
@@ -84,8 +110,8 @@ function trim_highlights(highlighted_text, max_window_size, min_gap_size)
   return results
 end
 
-local query = GetParam('query')
 local language = GetParam('language')
+local query = remove_stopwords(GetParam('query'), language)
 local limit = GetParam('limit')
 local offset = GetParam('offset')
 
@@ -136,7 +162,7 @@ for item in stmt:nrows() do
     heading = meta['heading'],
     is_root = meta['is_root'],
     highlight = {
-      content = trim_highlights(item['hl'], 50, 5)
+      content = trim_highlights(item['hl'], HL_WINDOW_SIZE, HL_MIN_GAP)
     },
     url = '/' .. item['text_id'] .. '/' .. language .. '/' .. item['author']
   }    
