@@ -111,6 +111,12 @@ function trim_highlights(highlighted_text, max_window_size, min_gap_size)
 end
 
 local language = GetParam('language')
+local restrict = GetParam('restrict')
+
+if restrict == 'root-texts' then
+  language = 'pli'
+end
+
 local query = remove_stopwords(GetParam('query'), language)
 local limit = GetParam('limit')
 local offset = GetParam('offset')

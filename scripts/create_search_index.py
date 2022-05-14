@@ -46,6 +46,10 @@ if __name__ == '__main__':
             text = ' '.join(text_data['translation_text'].values())
             table_text_search[lang].append((text_id, author, text))
 
+        if lang == 'pli' and 'root_text' in text_data:
+            text = ' '.join(text_data['root_text'].values())
+            table_text_search[lang].append((text_id, author, text))
+
     for json_file in glob('api/suttas/*/*', recursive=True):
         lang = get_language(json_file)
         author = get_author(json_file)
