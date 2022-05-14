@@ -4,6 +4,7 @@ import json
 import time
 import random
 import re
+import sys
 from os import path, environ
 from glob import glob
 import sqlite3
@@ -11,7 +12,9 @@ from collections import defaultdict
 import string
 from bs4 import BeautifulSoup
 
-DB_NAME = 'search.db'
+# TODO: replace with argparse
+LANGUAGES = ['pli', 'en'] + sys.argv[-2].split(',')
+DB_NAME = sys.argv[-1]
 
 def get_uid(filename):
     return filename.split('/')[-2]
@@ -42,6 +45,9 @@ if __name__ == '__main__':
         text_id = get_uid(json_file)
         text_data = json.loads(open(json_file).read())
 
+        if not lang in LANGUAGES:
+            continue
+
         if 'translation_text' in text_data:
             text = ' '.join(text_data['translation_text'].values())
             table_text_search[lang].append((text_id, author, text))
@@ -55,6 +61,9 @@ if __name__ == '__main__':
         author = get_author(json_file)
         text_id = get_uid(json_file)
         text_data = json.loads(open(json_file).read())
+
+        if not lang in LANGUAGES:
+            continue
 
         if not 'root_text' in text_data:
             print('Error no root_text', json_file)

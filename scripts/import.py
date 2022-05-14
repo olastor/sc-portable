@@ -4,8 +4,8 @@ import os
 import app
 import json
 
-LANGUAGES = ['en']
-PALI_LOOKUP_LANGUAGES = ['en', 'es', 'de'] #, 'zh', 'pt', 'id', 'nl']
+LANGUAGES = ['en', 'de']
+PALI_LOOKUP_LANGUAGES = ['en', 'de'] #, 'es', 'zh', 'pt', 'id', 'nl']
 CHINESE_LOOKUP_LANGUAGES = ['en']
 
 def flush(results):

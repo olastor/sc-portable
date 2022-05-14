@@ -2,7 +2,7 @@ lsqlite3 = require "lsqlite3"
 json = require "json"
 utils = require "utils"
 
-DB_PATH = 'search.db'
+DB_PATH = argv[-1] .. '.db'
 HL_TAG_OPEN = '<strong class="highlight">'
 HL_TAG_CLOSE = '</strong>'
 HL_WINDOW_SIZE = 20

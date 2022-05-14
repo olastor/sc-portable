@@ -1,7 +1,8 @@
 #!/bin/bash
 
 LANGUAGES="$1"
-LANGUAGES_PATTERN="(xct|pra|pgd|lzh|san|pli|$(echo $LANGUAGES | sed 's/,/|/g'))"
+# LANGUAGES_PATTERN="(xct|pra|pgd|lzh|san|pli|$(echo $LANGUAGES | sed 's/,/|/g'))"
+LANGUAGES_PATTERN="(pli|$(echo $LANGUAGES | sed 's/,/|/g'))"
 
 BINARY_NAME="$2" # must be in same dir
 
