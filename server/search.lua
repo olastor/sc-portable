@@ -74,40 +74,45 @@ function get_meta(text_id, author, language)
 end
 
 function trim_highlights(highlighted_text, max_window_size, min_gap_size)
-  local results_set = {}
   local results = {}
 
   highlighted_text = string.gsub(highlighted_text, '\n', ' ')
 
-  local trim_pattern = '>('
-  for i=0,max_window_size do
-    trim_pattern = trim_pattern .. '[^<]'
+  local pos_left = string.find(highlighted_text, HL_TAG_OPEN, 0, true)
+  if not pos_right then
+    return results
   end
-  trim_pattern = trim_pattern .. ')'
+  local _,pos_right = string.find(highlighted_text, HL_TAG_CLOSE, pos_left, true)
+  local next_pos_left = string.find(highlighted_text, HL_TAG_OPEN, pos_right, true)
 
-  for i=0,min_gap_size do
-    trim_pattern = trim_pattern .. '[^<]'
+  pos_left = math.max(0, pos_left - max_window_size)
+
+  while next_pos_left do
+    if (next_pos_left - max_window_size - min_gap_size) > (pos_right + max_window_size) then
+      local window = string.sub(highlighted_text, pos_left, math.min(#highlighted_text, pos_right + max_window_size))
+      table.insert(results, window)
+
+      pos_left = next_pos_left - max_window_size
+    end
+
+    _,pos_right = string.find(highlighted_text, HL_TAG_CLOSE, next_pos_left, true)
+    next_pos_left = string.find(highlighted_text, HL_TAG_OPEN, pos_right, true)
   end
-  trim_pattern = trim_pattern .. '+('
+  local window = string.sub(highlighted_text, pos_left, math.min(#highlighted_text, pos_right + max_window_size))
+  table.insert(results, window)
 
-  for i=0,max_window_size do
-    trim_pattern = trim_pattern .. '[^<]'
-  end
-  trim_pattern = trim_pattern .. ')'
+  local results_set = {}
+  local unique_results = {}
+  for i,item in ipairs(results) do
+    if results_set[item] ~= true then
+      table.insert(unique_results, item)
+      print(item)
+    end
 
-  text_trimmed = string.gsub('>' .. highlighted_text .. '<', trim_pattern, '>%1\n%2')
-  for item in string.gmatch(text_trimmed, '[^\n]+') do
     results_set[item] = true
   end
 
-  for item,_ in pairs(results_set) do
-    table.insert(results, item)
-  end
-
-  table.remove(results, #results)
-  table.remove(results, 1)
-
-  return results
+  return unique_results
 end
 
 local language = GetParam('language')
