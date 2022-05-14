@@ -1,6 +1,6 @@
 import re
 from glob import glob
-from os import path
+from os import path, environ
 from datetime import datetime
 
 PREFIX = 'sc-portable_'
@@ -14,7 +14,7 @@ def human_readable_size(size, decimal_places=1):
         size /= 1024.0
     return f"{size:.{decimal_places}f} {unit}"
 
-def build_table(glob_pattern)
+def build_table(glob_pattern):
     table = '|Languages|Size|Version|Build Date|Download Link|\n'
     table += '|:-:|:-:|:-:|:-:|:-:|'
 
@@ -23,9 +23,9 @@ def build_table(glob_pattern)
 
         version = re.match(r'^([^_]+)', filename.replace(PREFIX, '')).group(1)
         languages = re.match(r'^([^_]+)', filename.replace(PREFIX, '').replace(version + '_', '')).group(1).split('-')
-        download_link = 'https://github.com/olastor/sc-portable/releases/download/%s/%s' % (os.environ['GITHUB_REF_NAME'], path.basename(file))
+        download_link = 'https://github.com/olastor/sc-portable/releases/download/%s/%s' % (environ['GITHUB_REF_NAME'], path.basename(file))
 
-        table += '\n|%s|%s|%s|%s|%s|%s|' % (
+        table += '\n|%s|%s|%s|%s|%s|' % (
             ', '.join(languages), 
             human_readable_size(path.getsize(file)),
             version, 

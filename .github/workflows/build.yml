@@ -19,11 +19,11 @@ jobs:
             api/
             client/
           key: ${{ hashFiles('scripts/import.py', 'scripts/build-data.sh') }}
-      - name: build the data
+      - name: Build Static API Data
         if: "startsWith(github.ref, 'refs/tags/v') || steps.cache.outputs.cache-hit != 'true'"
         run: sudo scripts/build-data.sh
-      - name: zip the data
-        run: sudo zip -r api.zip api
+      - name: Compress API Data
+        run: sudo zip -qr api.zip api
       - uses: actions/upload-artifact@v3
         with:
           name: sc-client
@@ -44,7 +44,7 @@ jobs:
         with:
           path: binaries/
           key: ${{ hashFiles('.redbean-version', 'scripts/build-redbean.sh') }}
-      - name: build the data
+      - name: Build Redbean
         if: steps.cache.outputs.cache-hit != 'true'
         run: scripts/build-redbean.sh
       - uses: actions/upload-artifact@v3
@@ -59,7 +59,7 @@ jobs:
     needs: ["build-data", "build-redbean"]
     steps:
       - uses: actions/checkout@v3
-      - name: Download binaries
+      - name: Download Binaries
         uses: actions/download-artifact@v3
         with:
           name: redbean-binaries
@@ -68,7 +68,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: sc-api-data
-      - name: Download client build
+      - name: Download Client Build
         uses: actions/download-artifact@v3
         with:
           name: sc-client
@@ -114,7 +114,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: sc-portable
-      - name: Download SQLite databases
+      - name: Download SQLite Databases
         uses: actions/download-artifact@v3
         with:
           name: sc-portable-search
