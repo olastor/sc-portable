@@ -95,9 +95,9 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: sc-portable
-          path: 
-            - "*.com"
-            - "*.db"
+          path: |
+            "*.com"
+            "*.db"
           retention-days: 5
 
   build-docs:
