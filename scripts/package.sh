@@ -11,7 +11,7 @@ echo $LANGUAGES_PATTERN
 find api -type f | grep -vP '(language=|lang=)' > api_include.lst
 find api -type f | grep -P "((language=|lang=)$LANGUAGES_PATTERN)" >> api_include.lst
 
-zip -qr "./$BINARY_NAME" api/
+# zip -qr "./$BINARY_NAME" api/
 zip -qr "./$BINARY_NAME" -@ < api_include.lst
 rm api_include.lst
 
