@@ -262,15 +262,35 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#download" class="md-nav__link">
-    download
+  <a href="#quickstart" class="md-nav__link">
+    Quickstart
   </a>
+  
+    <nav class="md-nav" aria-label="Quickstart">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#download" class="md-nav__link">
+    Download
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#install" class="md-nav__link">
-    install
+  <a href="#known-errorslimitations" class="md-nav__link">
+    Known Errors/Limitations
   </a>
   
 </li>
@@ -310,15 +330,35 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#download" class="md-nav__link">
-    download
+  <a href="#quickstart" class="md-nav__link">
+    Quickstart
   </a>
+  
+    <nav class="md-nav" aria-label="Quickstart">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#download" class="md-nav__link">
+    Download
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#install" class="md-nav__link">
-    install
+  <a href="#known-errorslimitations" class="md-nav__link">
+    Known Errors/Limitations
   </a>
   
 </li>
@@ -342,8 +382,14 @@
 
 
 <h1 id="sc-portable">sc-portable</h1>
-<p><strong>docs are work in progress</strong>...</p>
-<h2 id="download">download</h2>
+<p>A portable offline version of the <a href="https://suttacentral.net/">suttacentral</a> website that can be downloaded as a single file and executed across multiple platforms and devices (using <a href="https://redbean.dev/">redbean</a>).</p>
+<h2 id="quickstart">Quickstart</h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is still experimental.</p>
+</div>
+<h3 id="download">Download</h3>
+<p>Choose a version with the languages you are interested in below.</p>
 <table>
 <thead>
 <tr>
@@ -371,7 +417,7 @@
 </tr>
 </tbody>
 </table>
-<p>here are the search files</p>
+<p>Additionally, you can (optionally) download an associated database file (must be the same language combination you downloaded above) which activates the search functionality for those languages.</p>
 <table>
 <thead>
 <tr>
@@ -399,10 +445,25 @@
 </tr>
 </tbody>
 </table>
-<h2 id="install">install</h2>
-<p>click on it on windows or run</p>
-<pre><code>chmod +x 
-</code></pre>
+<p>Please note that you <strong>must</strong> place this file into the same folder as the ".com" executable to make it work.</p>
+<h3 id="usage">Usage</h3>
+<p><strong>Windows / Mac (not tested)</strong></p>
+<p>Click on the ".com" file to execute it. You might need to allow some firewall settings that is prompted. Then open <a href="http://localhost:8080">http://localhost:8080</a> in your browser.</p>
+<p><strong>Linux</strong></p>
+<p>You can simply run:</p>
+<div class="highlight"><pre><span></span><code>chmod +x sc-portable_&lt;version&gt;.com
+bash -c &quot;./sc-portable_&lt;version&gt;.com&quot;
+</code></pre></div>
+<p>Then open <a href="http://localhost:8080">http://localhost:8080</a> in your browser.</p>
+<h2 id="known-errorslimitations">Known Errors/Limitations</h2>
+<ul>
+<li>Only the sutta section is working and only in the language(s) chosen</li>
+<li>The loading animation runs indefinetly sometimes</li>
+<li>Dictionary lookup works in text, but not in search or when clicking on the page of word</li>
+<li>The search can show characters with inproper encoding</li>
+<li>The search can only in english apply "stemming"</li>
+<li>Trying to reload the page and/or clearing the site cache sometimes helps resolving issues</li>
+</ul>
 
               
             </article>
