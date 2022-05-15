@@ -79,17 +79,29 @@ function trim_highlights(highlighted_text, max_window_size, min_gap_size)
   highlighted_text = string.gsub(highlighted_text, '\n', ' ')
 
   local pos_left = string.find(highlighted_text, HL_TAG_OPEN, 0, true)
+  if not pos_left then
+    return results
+  end
+
+  local _,pos_right = string.find(highlighted_text, HL_TAG_CLOSE, pos_left, true)
   if not pos_right then
     return results
   end
-  local _,pos_right = string.find(highlighted_text, HL_TAG_CLOSE, pos_left, true)
+
   local next_pos_left = string.find(highlighted_text, HL_TAG_OPEN, pos_right, true)
 
   pos_left = math.max(0, pos_left - max_window_size)
 
   while next_pos_left do
     if (next_pos_left - max_window_size - min_gap_size) > (pos_right + max_window_size) then
-      local window = string.sub(highlighted_text, pos_left, math.min(#highlighted_text, pos_right + max_window_size))
+      local window_left = string.find(highlighted_text, '[%s%p]', pos_left, false) + 1 
+      local window_right = string.find(highlighted_text, '[%s%p]', math.min(#highlighted_text, pos_right + max_window_size), false) 
+
+      if not window_right then
+        window_right = #highlighted_text
+      end
+
+      local window = string.sub(highlighted_text, window_left, window_right)
       table.insert(results, window)
 
       pos_left = next_pos_left - max_window_size
