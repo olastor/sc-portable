@@ -118,7 +118,6 @@ function trim_highlights(highlighted_text, max_window_size, min_gap_size)
   for i,item in ipairs(results) do
     if results_set[item] ~= true then
       table.insert(unique_results, item)
-      print(item)
     end
 
     results_set[item] = true
