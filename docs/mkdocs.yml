@@ -17,6 +17,9 @@ repo_name: sc-portable
 extra:
   generator: false
 markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
   - attr_list
   - pymdownx.emoji:
       emoji_index: !!python/name:materialx.emoji.twemoji
