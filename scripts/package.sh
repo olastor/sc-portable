@@ -5,6 +5,7 @@ LANGUAGES="$1"
 LANGUAGES_PATTERN="(pli|$(echo $LANGUAGES | sed 's/,/|/g'))"
 
 BINARY_NAME="$2" # must be in same dir
+SQLITE_DB_NAME=$(echo "$BINARY_NAME" | sed 's/\.com/_search-data.db/')
 
 echo $LANGUAGES_PATTERN
 
@@ -16,7 +17,12 @@ zip -qr "./$BINARY_NAME" -@ < api_include.lst
 rm api_include.lst
 
 cd server/
+
+# need to hardcode database filename
+cp search.lua ../search.lua.bak
+sed -i "s/search\.db/$SQLITE_DB_NAME/" search.lua
 zip -qr "../$BINARY_NAME" .
+mv ../search.lua.bak search.lua
 
 cd ../client
 zip  -qr "../$BINARY_NAME" .
