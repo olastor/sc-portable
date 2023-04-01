@@ -4,4 +4,4 @@ A portable offline version of the suttacentral website that can be downloaded as
 
 ## Build Instructions
 
-(TODO)
+TODO
