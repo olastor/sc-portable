@@ -5,6 +5,8 @@ set -e
 git clone https://github.com/suttacentral/suttacentral
 cd suttacentral
 
+git checkout production
+
 sed -i 's/sc-elasticsearch//g' Makefile
 cp ../scripts/import.py ./server/server/import.py
 make run-preview-env-no-search
